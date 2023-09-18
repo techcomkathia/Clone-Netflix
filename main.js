@@ -160,6 +160,23 @@ async function getCarousel(params, serie = false) {
     }
 }
 
+function showNavOnScroll() {
+    let navigation = document.querySelector("#navigation");
+    // Obtém o elemento de navegação com base no seletor "#navigation"
+  
+    if (scrollY > 0) {
+      // Verifica se a posição vertical do scroll é maior que 0
+      navigation.classList.add('scroll');
+      // Se for maior que 0, adiciona a classe 'scroll' ao elemento de navegação
+    } else {
+      navigation.classList.remove('scroll');
+      // Caso contrário, remove a classe 'scroll' do elemento de navegação
+    }
+  }
+  
+  // Event listener para exibir a navegação quando ocorrer o scroll na página
+  window.addEventListener('scroll', showNavOnScroll);
+
 async function callApiFunctions() {
     await getCarousel("popular");
     await getCarousel("top_rated");
