@@ -21,11 +21,11 @@ function showSearch(){
     searchInput.focus()
 }
 
-function hideSearch(e){
-    if (!searchContainer.contains(e.target)) {
+function hideSearch(){
+    
         searchContainer.style.border = "none";
         searchInput.style.width = "0";
-    }
+    
 }
 
 searchIcon.addEventListener("click", showSearch)
@@ -147,7 +147,7 @@ async function getCarousel(params, serie = false) {
     let list = serie ? await obterSeries(params) : await obterFilmes(params);
 
     for (let item of list) {
-        
+
         document.querySelector(`.${serie ? params + "_tv" : params}`).innerHTML += `
         <img src=${IMG_URL + item.poster_path} />
         <div class="informations-modal">
