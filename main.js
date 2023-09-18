@@ -10,6 +10,7 @@ let popularCarousel = document.querySelector(".popular");
 let movieContainer = document.querySelector(".movie");
 let searchContainer = document.querySelector(".search-container");
 let searchInput = document.querySelector("#search");
+let searchIcon = document.querySelector("#lupa");
 let moviesIds = [];
 let tvSeriesIds = [];
 
@@ -17,6 +18,7 @@ let tvSeriesIds = [];
 function showSearch(){
     searchContainer.style.border = "1px solid white" // borda branca
     searchInput.style.width = "25rem" //tamanho do input
+    searchInput.focus()
 }
 
 function hideSearch(e){
@@ -26,9 +28,13 @@ function hideSearch(e){
     }
 }
 
-document.addEventListener("mouseup", hideSearch)
+searchIcon.addEventListener("click", showSearch)
 
-async function getMovies(params){
+searchInput.addEventListener("focusout", hideSearch)
+
+
+
+async function obterFilmes(params){
     console.log(params);
 
     try {
@@ -47,7 +53,7 @@ async function getMovies(params){
     }
 }
 
-async function getTvSeries(params){
+async function obterSeries(params){
     try {
         let data = [];
 
@@ -68,7 +74,7 @@ async function getTvSeries(params){
 
 }
 
-async function getMovie (id){
+async function obterUmFilme (id){
    try {
 
         let response = await fetch(`${BASE_URL + "movie/" + id + "?" + API_KEY}&${language}`)
@@ -83,7 +89,7 @@ async function getMovie (id){
 
 }
 
-async function getTvSerie(id){
+async function obterUmaSerie(id){
     try {
 
          let response = await fetch(`${BASE_URL + "tv/" + id + "?" + API_KEY}&${language}`)
@@ -97,13 +103,13 @@ async function getTvSerie(id){
  
 }
 
-async function getRandomPoster(){
-    let random = Math.floor(Math.random()* 30)
-    let movieOrPoster = Math.floor(Math.random() * 5) > 2
+async function posterPrincipalAleatorio(){
+    let numRandom = Math.floor(Math.random()* 30)
+    let filmeOuSerie = Math.floor(Math.random()*10)%2==0
     let element
 
-    if (movieOrPoster) {
-        element = await getMovie(moviesIds[random]);
+    if (filmeOuSerie) {
+        element = await obterUmFilme(moviesIds[numRandom]);
 
         home.innerHTML = `
         <div class="poster-container">
@@ -118,30 +124,34 @@ async function getRandomPoster(){
         
         return;
     }
+    else{
+        element= await obterUmaSerie(tvSeriesIds[numRandom])
 
-    element= await getTvSerie(tvSeriesIds[random])
-
-    home.innerHTML =`
-    <div class="poster-container">
-        <div class= "poster-infos">
-            <h4>Série</h4>
-            <h1>${element.name}</h1>
-            <p>${element.overview}</p>
+        home.innerHTML =`
+        <div class="poster-container">
+            <div class= "poster-infos">
+                <h4>Série</h4>
+                <h1>${element.name}</h1>
+                <p>${element.overview}</p>
+            </div>
         </div>
-    </div>
-    <img src=${IMG_URL + element.backdrop_path} alt="${element.name} poster"/>`     
+        <img src=${IMG_URL + element.backdrop_path} alt="${element.name} poster"/>`       
+    }
+
+    
 
 }
 
 
-async function getCarousel(params, is_tv = false) {
-    let list = is_tv ? await getTvSeries(params) : await getMovies(params);
+async function getCarousel(params, serie = false) {
+    let list = serie ? await obterSeries(params) : await obterFilmes(params);
 
     for (let item of list) {
-        document.querySelector(`.${is_tv ? params + "_tv" : params}`).innerHTML += `
+        
+        document.querySelector(`.${serie ? params + "_tv" : params}`).innerHTML += `
         <img src=${IMG_URL + item.poster_path} />
         <div class="informations-modal">
-            <img src=${IMG_URL + item.backdrop_path} alt="${is_tv ? item.name : item.title}"/>
+            <img src=${IMG_URL + item.backdrop_path} alt="${serie ? item.name : item.title}"/>
             <div>
                 <!-- Conteúdo adicional do modal -->
             </div>
@@ -158,7 +168,7 @@ async function callApiFunctions() {
     await getCarousel("popular", true);
     await getCarousel("top_rated", true);
 
-    await getRandomPoster();
+    await posterPrincipalAleatorio();
 }
 
 callApiFunctions();

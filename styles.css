@@ -209,7 +209,7 @@ main {
   z-index: -1;
 }
 
-.movies-tv-carousels {
+.filmes-series-carrossel {
   margin-block: 7rem;
   display: flex;
   flex-direction: column;
