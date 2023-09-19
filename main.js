@@ -6,31 +6,28 @@ const language = 'language=pt-BR';
 
 //variáveis globais
 let home = document.querySelector("#home");
-let popularCarousel = document.querySelector(".popular");
-let movieContainer = document.querySelector(".movie");
-let searchContainer = document.querySelector(".search-container");
-let searchInput = document.querySelector("#search");
-let searchIcon = document.querySelector("#lupa");
-let moviesIds = [];
-let tvSeriesIds = [];
+let containerPesquisa = document.querySelector(".search-container");
+let inputPesquisar = document.querySelector("#search");
+let iconePesquisar = document.querySelector("#lupa");
+let idsFilmes = [];
+let idsSeries = [];
 
 
-function showSearch(){
-    searchContainer.style.border = "1px solid white" // borda branca
-    searchInput.style.width = "25rem" //tamanho do input
-    searchInput.focus()
+function mostrarBarraPesquisa(){
+    containerPesquisa.style.border = "1px solid white" // borda branca
+    inputPesquisar.style.width = "25rem" //tamanho do input
+    inputPesquisar.focus()
 }
 
-function hideSearch(){
-    
-        searchContainer.style.border = "none";
-        searchInput.style.width = "0";
+function esconderBarraPesquisa(){
+        containerPesquisa.style.border = "none";
+        inputPesquisar.style.width = "0";
     
 }
 
-searchIcon.addEventListener("click", showSearch)
+iconePesquisar.addEventListener("click", mostrarBarraPesquisa)
 
-searchInput.addEventListener("focusout", hideSearch)
+inputPesquisar.addEventListener("focusout", esconderBarraPesquisa)
 
 
 
@@ -44,7 +41,7 @@ async function obterFilmes(params){
 
             response = await response.json();  
             data.push(...response.results);
-            response.results.forEach(movie => moviesIds.push(movie.id));
+            response.results.forEach(movie => idsFilmes.push(movie.id));
         }
         
         return data;
@@ -62,7 +59,7 @@ async function obterSeries(params){
             response = await response.json();
             data.push(...response.results);
 
-            response.results.forEach(tvSerie => tvSeriesIds.push(tvSerie.id));
+            response.results.forEach(tvSerie => idsSeries.push(tvSerie.id));
         }
 
         return data ;
@@ -75,17 +72,16 @@ async function obterSeries(params){
 }
 
 async function obterUmFilme (id){
-   try {
-
+    try {
         let response = await fetch(`${BASE_URL + "movie/" + id + "?" + API_KEY}&${language}`)
 
         let data = await response.json()
 
         return data
-
-   } catch (e) {
+    }
+    catch (e) {
         throw new Error(e.message);   
-   }
+    }
 
 }
 
@@ -97,7 +93,8 @@ async function obterUmaSerie(id){
          let data = await response.json() 
          return data
  
-    } catch (e) {
+    } 
+    catch (e) {
          throw new Error(e.message); 
     }
  
@@ -109,7 +106,7 @@ async function posterPrincipalAleatorio(){
     let element
 
     if (filmeOuSerie) {
-        element = await obterUmFilme(moviesIds[numRandom]);
+        element = await obterUmFilme(idsFilmes[numRandom]);
 
         home.innerHTML = `
         <div class="poster-container">
@@ -125,7 +122,7 @@ async function posterPrincipalAleatorio(){
         return;
     }
     else{
-        element= await obterUmaSerie(tvSeriesIds[numRandom])
+        element= await obterUmaSerie(idsSeries[numRandom])
 
         home.innerHTML =`
         <div class="poster-container">
@@ -143,7 +140,7 @@ async function posterPrincipalAleatorio(){
 }
 
 
-async function getCarousel(params, serie = false) {
+async function montarCarrossel(params, serie = false) {
     let list = serie ? await obterSeries(params) : await obterFilmes(params);
 
     for (let item of list) {
@@ -160,35 +157,32 @@ async function getCarousel(params, serie = false) {
     }
 }
 
-function showNavOnScroll() {
-    let navigation = document.querySelector("#navigation");
-    // Obtém o elemento de navegação com base no seletor "#navigation"
+function alterarBotaoDireita(carrossel) {
+    if (carrossel.scrollLeft === 0) {
+      // Verifica se o carrossel está na posição inicial (scrollLeft igual a 0)
+      carrossel.previousElementSibling.style.display = "none";
+      // Se estiver na posição inicial, oculta o elemento anterior (botão de ir para a esquerda)
   
-    if (scrollY > 0) {
-      // Verifica se a posição vertical do scroll é maior que 0
-      navigation.classList.add('scroll');
-      // Se for maior que 0, adiciona a classe 'scroll' ao elemento de navegação
-    } else {
-      navigation.classList.remove('scroll');
-      // Caso contrário, remove a classe 'scroll' do elemento de navegação
+      return;
     }
-  }
   
-  // Event listener para exibir a navegação quando ocorrer o scroll na página
-  window.addEventListener('scroll', showNavOnScroll);
+    carrossel.previousElementSibling.style.display = "block";
+    // Caso contrário, exibe o elemento anterior (botão de ir para a esquerda)
+}
 
-async function callApiFunctions() {
-    await getCarousel("popular");
-    await getCarousel("top_rated");
-    await getCarousel("upcoming");
+
+async function chamarFuncoesAPI() {
+    await montarCarrossel("popular");
+    await montarCarrossel("top_rated");
+    await montarCarrossel("upcoming");
  
-    await getCarousel("popular", true);
-    await getCarousel("top_rated", true);
+    await montarCarrossel("popular", true);
+    await montarCarrossel("top_rated", true);
 
     await posterPrincipalAleatorio();
 }
 
-callApiFunctions();
+chamarFuncoesAPI();
 
 
 
