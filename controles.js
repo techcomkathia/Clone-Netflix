@@ -26,6 +26,19 @@ function goRight(nomeDaClasse) {
     // Chama a função alterarBotaoDireita para ocultar ou exibir o botão de ir para a direita do carrossel
 }
 
+function alterarBotaoDireita(carrossel) {
+    if (carrossel.scrollLeft === 0) {
+      // Verifica se o carrossel está na posição inicial (scrollLeft igual a 0)
+      carrossel.previousElementSibling.style.display = "none";
+      // Se estiver na posição inicial, oculta o elemento anterior (botão de ir para a esquerda)
+  
+      return;
+    }
+  
+    carrossel.previousElementSibling.style.display = "block";
+    // Caso contrário, exibe o elemento anterior (botão de ir para a esquerda)
+}
+
 function ajustarMenuPlanoFundo() {
     let navigation = document.querySelector("#navigation");
     // Obtém o elemento de navegação com base no seletor "#navigation"
