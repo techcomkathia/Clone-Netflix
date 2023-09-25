@@ -157,20 +157,6 @@ async function montarCarrossel(params, serie = false) {
     }
 }
 
-function alterarBotaoDireita(carrossel) {
-    if (carrossel.scrollLeft === 0) {
-      // Verifica se o carrossel está na posição inicial (scrollLeft igual a 0)
-      carrossel.previousElementSibling.style.display = "none";
-      // Se estiver na posição inicial, oculta o elemento anterior (botão de ir para a esquerda)
-  
-      return;
-    }
-  
-    carrossel.previousElementSibling.style.display = "block";
-    // Caso contrário, exibe o elemento anterior (botão de ir para a esquerda)
-}
-
-
 async function chamarFuncoesAPI() {
     await montarCarrossel("popular");
     await montarCarrossel("top_rated");
