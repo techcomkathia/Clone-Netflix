@@ -73,7 +73,7 @@ async function obterSeries(params){
 
 async function obterUmFilme (id){
     try {
-        let response = await fetch(`${BASE_URL + "movie/" + id + "?" + API_KEY}&${language}`)
+        let response = await fetch(`${BASE_URL}movie/${id}?${API_KEY}&${language}`)
 
         let data = await response.json()
 
