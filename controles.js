@@ -1,3 +1,24 @@
+//variáveis globais
+let home = document.querySelector("#home");
+let containerPesquisa = document.querySelector(".search-container");
+let inputPesquisar = document.querySelector("#search");
+let iconePesquisar = document.querySelector("#lupa");
+
+function mostrarBarraPesquisa(){
+    containerPesquisa.style.border = "1px solid white" // borda branca
+    inputPesquisar.style.width = "25rem" //tamanho do input
+    inputPesquisar.focus()
+}
+
+function esconderBarraPesquisa(){
+        containerPesquisa.style.border = "none";
+        inputPesquisar.style.width = "0";
+    
+}
+
+iconePesquisar.addEventListener("click", mostrarBarraPesquisa)
+
+inputPesquisar.addEventListener("focusout", esconderBarraPesquisa)
 
 // Função para ir para a esquerda no carrossel
 function goLeft(nomeDaClasse) {
