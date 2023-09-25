@@ -88,7 +88,7 @@ async function obterUmFilme (id){
 async function obterUmaSerie(id){
     try {
 
-         let response = await fetch(`${BASE_URL + "tv/" + id + "?" + API_KEY}&${language}`)
+         let response = await fetch(`${BASE_URL}tv/${id}?${API_KEY}&${language}`)
       
          let data = await response.json() 
          return data
