@@ -1,5 +1,5 @@
 //variáveis globais
-let home = document.querySelector("#home");
+
 let containerPesquisa = document.querySelector(".search-container");
 let inputPesquisar = document.querySelector("#search");
 let iconePesquisar = document.querySelector("#lupa");
